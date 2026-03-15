@@ -1,0 +1,8 @@
+# Normalize all text files to LF in the repository.
+* text=auto eol=lf
+
+# Treat generated Markdown as text.
+*.md text eol=lf
+*.py text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
