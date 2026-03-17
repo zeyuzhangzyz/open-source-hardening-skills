@@ -183,6 +183,21 @@ Also record in `OSS_HARDENING_STATUS.md`:
 - If verdict is `almost`, either stop with the recorded gaps or do one targeted pass and rerun `/oss-review`.
 - If verdict is `not ready`, return to the highest-leverage recommended stage and only rerun review after fixes are applied.
 
+## Anti-patterns
+
+- Do not ask the external reviewer to judge a repo without a concrete repo briefing and current verification evidence.
+- Do not paraphrase or trim the raw reviewer response; preserve it verbatim.
+- Do not treat stylistic preferences as release blockers.
+
+## Self-check
+
+Before declaring this stage complete, verify:
+
+- [ ] `OSS_REVIEW.md` exists and contains verdict, overall score, category scorecard, strengths, weaknesses, minimum fixes, return-stage mapping, and raw response.
+- [ ] The raw reviewer response is preserved verbatim.
+- [ ] `OSS_HARDENING_STATUS.md` was updated with the latest score, verdict, and next recommended stage.
+- [ ] Prior review history was appended to rather than overwritten.
+
 ## Key Rules
 
 - ALWAYS use `config: {"model_reasoning_effort": "xhigh"}`
@@ -191,8 +206,14 @@ Also record in `OSS_HARDENING_STATUS.md`:
 - Treat missing tests, broken setup, missing docs, missing license or citation path, irreproducible claims, and unsafe release posture as higher severity than polish issues
 - Keep the review grounded in repo evidence, not imagined release processes
 
+## Failure Handling
+
+- If the external reviewer is unreachable or returns an unusable response, record the failure in `OSS_REVIEW.md` and surface the blocker to the user.
+- If the review reveals a foundational gap, return to the recommended stage rather than patching surface issues.
+- If prior review history exists, append the new round rather than overwriting it.
+
 ## Done Criteria
 
-- `OSS_REVIEW.md` exists and includes verdict, scorecard, strengths, weaknesses, minimum fixes, return-stage mapping, and raw response
-- `OSS_HARDENING_STATUS.md` reflects the latest external review state
-- The user can decide whether to publish, patch, or loop back based on the review
+- `OSS_REVIEW.md` contains an appended review round with verdict, score, scorecard, strengths, weaknesses, minimum fixes, return-stage mapping, and raw response verbatim.
+- `OSS_HARDENING_STATUS.md` records the latest external review score, verdict, and next recommended stage.
+- Prior review history remains intact.
