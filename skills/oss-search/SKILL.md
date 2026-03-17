@@ -109,6 +109,21 @@ Extract the actionable parts. For each result:
 - Note any patterns worth copying (file path, config structure, CI step).
 - Skip results that are off-topic or low quality.
 
+## Anti-patterns
+
+- Do not return raw HTML, scraped noise, or an unfiltered wall of links.
+- Do not cite weak examples when a better official doc or high-signal repo is available.
+- Do not stop after one marginal result; triangulate across at least 2 sources.
+
+## Self-check
+
+Before declaring this stage complete, verify:
+
+- [ ] The response contains at least 2 relevant references.
+- [ ] Every reference includes a URL and a short note explaining why it matters.
+- [ ] For code/CI references, the response identifies the specific pattern, file, or config worth copying.
+- [ ] The output is summarized, not dumped raw.
+
 ## Failure Handling
 
 - If a search URL returns no useful results, try a broader query or a different engine.
@@ -117,6 +132,6 @@ Extract the actionable parts. For each result:
 
 ## Done Criteria
 
-- At least 2–3 relevant references are found and summarized.
-- Each reference has a URL and a brief note on what it contributes to the current task.
-- The output is short enough to act on without further filtering.
+- The response includes at least 2 relevant references, each with a URL and a relevance note.
+- Any recommended pattern is described concretely enough to copy into the current task.
+- If no strong examples were found after retries, that failure is stated explicitly.
