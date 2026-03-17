@@ -122,7 +122,6 @@ If the loop returns:
 - Do not merge all six stages into one opaque report.
 - Do not require manual stage-by-stage interaction unless the user asks for it.
 - Do not push through later stages when earlier artifacts are incomplete.
-- Do not hide rollback reasons; document them in `OSS_HARDENING_STATUS.md`.
 
 ## Anti-patterns
 
