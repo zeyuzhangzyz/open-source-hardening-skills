@@ -39,7 +39,7 @@ Insert into every `SKILL.md`, **before** `## Failure Handling`:
 
 #### `## Self-check`
 
-A verifiable checklist the AI must pass before declaring the stage complete. Directly mirrors the `## Done Criteria` — if they drift, the Self-check is authoritative for execution and Done Criteria is authoritative for documentation.
+A verifiable checklist the AI must pass before declaring the stage complete. Every Self-check item must have a 1:1 declarative counterpart in `## Done Criteria`. Drift between the two sections is invalid, not tolerated — when editing one, the other must be updated in the same change.
 
 ### 2. Done Criteria Rewrite
 
@@ -179,7 +179,27 @@ All vague Done Criteria ("the user can understand…", "the agent has a plan…"
 
 ## Done Criteria Rewrites
 
-Each skill's `## Done Criteria` is rewritten from judgment-based to artifact-based. See per-skill details in the Anti-patterns section above and the Self-check section. The rule: every criterion must match the form "X exists and contains Y" or "command Z exits 0".
+Each skill's `## Done Criteria` is rewritten from judgment-based to artifact-based. The rewritten criteria are the declarative form of the Self-check items above — each Self-check item has a 1:1 counterpart here. The rule for all criteria: must match "X exists and contains Y" or "command Z exits 0" or "blocker is recorded explicitly".
+
+**oss-audit:** `OSS_AUDIT.md` exists and contains the repository summary, all seven audit sections, a prioritized file-level change table, and a "do first / do later" summary. Every finding includes `P0`/`P1`/`P2`, evidence, impact, and the smallest credible fix. Any release-readiness blocker (licensing, citation, reproducibility, private assets, failed commands) is recorded explicitly.
+
+**oss-plan:** `OSS_PLAN.md` exists and contains a scope summary, staged markdown checklist, execution order, explicit stop points, and a minimum shippable subset section. Every checklist item includes purpose, change points, acceptance criteria, suggested commands, and estimated impact radius. No item is so large it cannot fit in one reviewable PR.
+
+**oss-refactor:** `OSS_REFACTOR.md` exists and lists selected scope, tooling choices, touched paths, commands run, and rollback notes. The artifact includes `Changed now` and `Deferred intentionally` sections. All new tooling or config additions are minimal and justified.
+
+**oss-tests:** `OSS_TEST_STRATEGY.md` exists and records the chosen framework, exact local test command, mock/fake strategy, known gaps, and coverage table. The repo contains test files or scaffold files for the chosen test path. The test loop is CI-safe or the blocker is explicitly recorded.
+
+**oss-ci:** `.github/workflows/` contains one primary CI workflow for the repo's lint and test path. The workflow triggers on `push` and `pull_request`, fails on command failure, and avoids secrets or live services. `OSS_CI.md` records triggers, jobs, commands, cache behavior, local reproduction, and remaining gaps.
+
+**oss-docs:** `OSS_DOCS.md` exists and records README improvements, FAQ content, architecture notes, reproducibility notes, and deferred documentation. `README.md`, `SECURITY.md`, and `CHANGELOG.md` exist after the pass. If the repo has a chosen license or needs citation metadata, `LICENSE` and `CITATION.cff` exist; otherwise the unresolved decision is recorded.
+
+**oss-review:** `OSS_REVIEW.md` contains an appended review round with verdict, score, scorecard, strengths, weaknesses, minimum fixes, return-stage mapping, and raw response verbatim. `OSS_HARDENING_STATUS.md` records the latest score, verdict, and next recommended stage. Prior history is preserved.
+
+**oss-review-loop:** `OSS_REVIEW_LOOP.md` contains 1 to 4 round entries with assessment, minimum fixes, actions taken, verification outcomes, raw response, and status. `OSS_HARDENING_STATUS.md` reflects the latest loop state. The final state is either a positive readiness assessment or a clear blocker list with a recommended return stage.
+
+**oss-hardening:** `OSS_HARDENING_STATUS.md` exists and records current stage, completed artifacts, execution mode, unresolved decisions, next command, and stop/rollback conditions. No later stage is marked complete while a required earlier-stage artifact is missing (unless a skip reason is recorded). Final status records either successful completion through review-loop or the exact blocker preventing it.
+
+**oss-search:** The response includes at least 2 relevant references, each with a URL and a relevance note. Any recommended pattern is described concretely enough to copy. If no strong examples were found after retries, that failure is stated explicitly.
 
 ---
 
@@ -193,6 +213,7 @@ Key behavior:
 - Respects `$REPO_URL`, `$CLONE_DIR`, `$SKILLS_DIR` env overrides
 - Fails fast on missing `git`
 - Prints count of installed skills on success
+- **Only replaces this pack's own skill directories** (`oss-*`). Never deletes or touches unrelated entries already present under `~/.claude/skills/`.
 
 ### install.ps1 (Windows PowerShell)
 
@@ -202,13 +223,13 @@ Same logic as `install.sh`, using PowerShell idioms. Accepts `-RepoUrl`, `-Clone
 
 ## Plugin Manifest
 
-Two files, both committed to the repo root:
+Two files at different locations:
 
 ### `.claude-plugin/plugin.json`
-Official Claude Code plugin manifest format. Enables future `claude plugin install` UX. Contains: name, version, description, author, skills path, homepage, license, keywords.
+Lives inside the `.claude-plugin/` subdirectory (not the repo root). This is the official Claude Code plugin manifest format. Enables future `claude plugin install` UX. Contains: name, version, description, author, skills path, homepage, license, keywords.
 
 ### `plugin.yaml`
-Mirror/companion file for non-Claude-Code tooling. Additionally lists per-skill output artifacts, optional Codex MCP integration requirements, and the validation command.
+Lives at the **repo root**. Mirror/companion file for non-Claude-Code tooling. Additionally lists per-skill output artifacts, optional Codex MCP integration requirements, and the validation command. References `.claude-plugin/plugin.json` as the authoritative manifest.
 
 ---
 
@@ -217,7 +238,8 @@ Mirror/companion file for non-Claude-Code tooling. Additionally lists per-skill 
 Add a prompt-lint test class to `tests/test_skills.py`:
 
 ```python
-REQUIRED_SECTIONS = {"## Anti-patterns", "## Self-check", "## Done Criteria"}
+REQUIRED_SECTIONS = ["## Anti-patterns", "## Self-check", "## Failure Handling", "## Done Criteria"]
+# Order enforced: Anti-patterns and Self-check must appear before Failure Handling
 
 class PromptStructureTests(unittest.TestCase):
     def test_required_sections_present(self):
@@ -227,6 +249,20 @@ class PromptStructureTests(unittest.TestCase):
                 text = path.read_text(encoding="utf-8")
                 for section in REQUIRED_SECTIONS:
                     self.assertIn(section, text, f"{skill}: missing '{section}'")
+
+    def test_section_order(self):
+        """Anti-patterns and Self-check must appear before Failure Handling."""
+        for skill in EXPECTED_SKILLS:
+            path = SKILLS_DIR / skill / "SKILL.md"
+            with self.subTest(skill=skill):
+                text = path.read_text(encoding="utf-8")
+                idx_anti = text.find("## Anti-patterns")
+                idx_self = text.find("## Self-check")
+                idx_fail = text.find("## Failure Handling")
+                self.assertLess(idx_anti, idx_fail,
+                    f"{skill}: ## Anti-patterns must appear before ## Failure Handling")
+                self.assertLess(idx_self, idx_fail,
+                    f"{skill}: ## Self-check must appear before ## Failure Handling")
 ```
 
 ---
