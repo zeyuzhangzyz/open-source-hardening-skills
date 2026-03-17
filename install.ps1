@@ -32,6 +32,6 @@ Get-ChildItem -Path (Join-Path $CloneDir "skills") -Directory -Filter "oss-*" | 
   Copy-Item -Recurse -Force $_.FullName $targetDir
 }
 
-$installedCount = (Get-ChildItem -Path (Join-Path $CloneDir "skills") -Directory).Count
+$installedCount = (Get-ChildItem -Path (Join-Path $CloneDir "skills") -Directory -Filter "oss-*").Count
 Write-Host "Installed $installedCount skills to $SkillsDir"
 Write-Host "Restart Claude Code or run /reload if the skills do not appear immediately."

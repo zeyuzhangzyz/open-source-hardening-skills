@@ -33,7 +33,7 @@ for skill_dir in "$CLONE_DIR"/skills/oss-*/; do
   cp -R "$skill_dir" "$target_dir"
 done
 
-installed_count="$(find "$CLONE_DIR/skills" -mindepth 1 -maxdepth 1 -type d | wc -l | tr -d ' ')"
+installed_count="$(find "$CLONE_DIR/skills" -mindepth 1 -maxdepth 1 -type d -name 'oss-*' | wc -l | tr -d ' ')"
 
 echo "Installed $installed_count skills to $SKILLS_DIR"
 echo "Restart Claude Code or run /reload if the skills do not appear immediately."
