@@ -73,6 +73,21 @@ The README checklist must cover at least:
 - Link to real files and workflows that exist now.
 - Remove stale instructions rather than preserving them for nostalgia.
 
+## Anti-patterns
+
+- Do not turn the README into a dump of all documentation — keep it focused on quick start.
+- Do not invent commands, support guarantees, architecture claims, or policies the repo cannot support.
+- Do not choose a license or security policy on the maintainer's behalf when it is unknown; record the decision gap instead.
+
+## Self-check
+
+Before declaring this stage complete, verify:
+
+- [ ] `OSS_DOCS.md` exists and includes README checklist, FAQ draft, architecture notes, and licensing/citation/reproducibility notes.
+- [ ] `README.md` has project purpose, quick start, local verification, contribution entry point, and deeper-doc links.
+- [ ] `SECURITY.md` and `CHANGELOG.md` exist or were improved in place.
+- [ ] If applicable, `LICENSE` and `CITATION.cff` exist; otherwise the missing maintainer decision is explicitly recorded.
+
 ## Failure Handling
 
 - If behavior is uncertain, write an open question instead of making up documentation.
@@ -82,6 +97,6 @@ The README checklist must cover at least:
 
 ## Done Criteria
 
-- The README has a clean entry point and links to deeper docs.
-- `SECURITY.md` and `CHANGELOG.md` exist or were improved in place.
-- `OSS_DOCS.md` captures the doc plan, FAQ, architecture recommendations, and any licensing or citation decisions still needed.
+- `OSS_DOCS.md` exists and records README improvements, FAQ content, architecture notes, reproducibility notes, and deferred documentation.
+- `README.md`, `SECURITY.md`, and `CHANGELOG.md` exist after the pass, either newly added or updated in place.
+- If the repo has a chosen license or needs citation metadata, `LICENSE` and `CITATION.cff` exist; otherwise the unresolved maintainer decision is recorded.
