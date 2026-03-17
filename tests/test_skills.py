@@ -170,6 +170,11 @@ class PromptStructureTests(unittest.TestCase):
                     f"{path.parent.name}: ## Anti-patterns must appear before ## Failure Handling")
                 self.assertLess(idx_self, idx_fail,
                     f"{path.parent.name}: ## Self-check must appear before ## Failure Handling")
+                idx_done = text.find("## Done Criteria")
+                self.assertGreater(idx_done, -1,
+                    f"{path.parent.name}: '## Done Criteria' not found")
+                self.assertLess(idx_fail, idx_done,
+                    f"{path.parent.name}: ## Failure Handling must appear before ## Done Criteria")
 
 
 if __name__ == "__main__":
