@@ -94,6 +94,23 @@ Prefer changes that improve multiple categories at once.
 
 Keep the report executable. Every recommendation should imply a concrete next file or command.
 
+## Anti-patterns
+
+- Do not modify code, configs, or docs during the audit unless the user explicitly changed scope.
+- Do not report findings without concrete evidence: file path, command output, or missing artifact.
+- Do not produce an unprioritized laundry list; every finding must be `P0`, `P1`, or `P2`.
+- Do not invent runtime behavior that cannot be verified from code, docs, or commands.
+- Do not skip categories because the repo appears simple; record "no findings" explicitly when clean.
+
+## Self-check
+
+Before declaring this stage complete, verify:
+
+- [ ] `OSS_AUDIT.md` exists in the repo root.
+- [ ] It contains a repository summary, all seven audit categories, a file-level change table, and a "do first / do later" section.
+- [ ] Every finding includes priority, evidence, why it matters, and the smallest credible fix.
+- [ ] Any failed command, unclear stack detail, or private-data blocker is recorded explicitly.
+
 ## Failure Handling
 
 - If the repository is too large to audit fully, state the scope you audited and why.
@@ -103,7 +120,6 @@ Keep the report executable. Every recommendation should imply a concrete next fi
 
 ## Done Criteria
 
-- `OSS_AUDIT.md` exists and covers all seven categories.
-- The file-level change list is present and prioritized.
-- The chat summary tells the user what to tackle first without rereading the whole report.
-- Licensing, citation, and reproducibility gaps are surfaced when they affect public release readiness.
+- `OSS_AUDIT.md` exists and contains the repository summary, all seven audit sections, a prioritized file-level change table, and a "do first / do later" summary.
+- Every finding in `OSS_AUDIT.md` includes `P0`, `P1`, or `P2`, evidence, impact, and the smallest credible fix.
+- Any release-readiness blocker related to licensing, citation, reproducibility, private assets, or failed commands is recorded explicitly.
