@@ -80,6 +80,22 @@ Record in `OSS_CI.md`:
 - what remains intentionally out of scope
 - how to reproduce the workflow locally
 
+## Anti-patterns
+
+- Do not create a second workflow that duplicates an existing CI intent without improving it.
+- Do not run commands in CI that are not already trusted locally.
+- Do not hide omitted checks without recording why they were excluded in `OSS_CI.md`.
+- Do not require secrets or live services in the primary blocking workflow.
+
+## Self-check
+
+Before declaring this stage complete, verify:
+
+- [ ] A workflow file exists under `.github/workflows/`.
+- [ ] The workflow triggers on both `push` and `pull_request`.
+- [ ] The workflow runs lint and test commands that match the repo's local verification path.
+- [ ] `OSS_CI.md` records triggers, jobs, cache behavior, local reproduction steps, and known follow-ups.
+
 ## Failure Handling
 
 - If no reliable test command exists yet, stop and hand back to `/oss-tests`.
@@ -88,6 +104,6 @@ Record in `OSS_CI.md`:
 
 ## Done Criteria
 
-- `.github/workflows/` contains one clear minimal CI workflow for lint + test.
-- The workflow triggers on push and pull requests, uses caching where appropriate, and fails on errors.
-- `OSS_CI.md` explains the resulting CI design and remaining gaps.
+- `.github/workflows/` contains one primary CI workflow for the repo's lint and test path.
+- The workflow triggers on `push` and `pull_request`, fails on command failure, and avoids secrets or live services.
+- `OSS_CI.md` records triggers, jobs, commands, cache behavior, local reproduction, and remaining gaps.
