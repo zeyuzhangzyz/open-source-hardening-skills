@@ -92,6 +92,22 @@ For paper code, the "critical path" is often the smallest reproducible run: load
 - Run the chosen test command locally.
 - Record the command and outcome in `OSS_TEST_STRATEGY.md`.
 
+## Anti-patterns
+
+- Do not optimize for coverage numbers instead of protecting the critical path.
+- Do not add tests that need secrets, network access, paid APIs, or large private assets.
+- Do not keep flaky tests in the default CI loop; either fix or explicitly exclude them.
+- Do not invent test coverage claims that cannot be verified locally.
+
+## Self-check
+
+Before declaring this stage complete, verify:
+
+- [ ] `OSS_TEST_STRATEGY.md` exists and names the framework, test command, mock/fake strategy, and known gaps.
+- [ ] It includes a coverage table for: critical path, failure branch, and input validation (or records blockers for missing classes).
+- [ ] Actual test files or explicit scaffold targets were added.
+- [ ] The chosen test command is recorded as CI-safe, or the blocker is stated clearly.
+
 ## Failure Handling
 
 - If the repo has no testable seam yet, document the blocker and add the smallest seam extraction task.
@@ -100,7 +116,6 @@ For paper code, the "critical path" is often the smallest reproducible run: load
 
 ## Done Criteria
 
-- There is a reproducible local test command.
-- Three distinct test classes are covered or clearly specified with blockers.
-- The resulting tests can run in CI without secrets or live services.
-- Research-oriented repos use a CI-safe smoke path instead of relying on full benchmark or training runs.
+- `OSS_TEST_STRATEGY.md` exists and records the chosen framework, exact local test command, mock/fake strategy, known gaps, and coverage table.
+- The repo contains test files or scaffold files for the chosen test path.
+- The test loop is CI-safe or the blocker preventing that is explicitly recorded.
