@@ -87,6 +87,22 @@ Add explicit pause points such as:
 - Stop after tests if mocks are not trustworthy yet.
 - Stop before CI if local commands still fail nondeterministically.
 
+## Anti-patterns
+
+- Do not restate the audit verbatim; convert it into reviewable, actionable work items.
+- Do not create checklist items without file paths, commands, and acceptance criteria.
+- Do not mix launch blockers (`P0`) with aspirational roadmap work in the same checklist tier.
+- Do not create items so large they cannot fit in a single reviewable PR.
+
+## Self-check
+
+Before declaring this stage complete, verify:
+
+- [ ] `OSS_PLAN.md` exists in the repo root.
+- [ ] It contains a scope summary, staged checklist, execution order, explicit stop points, and a minimum shippable subset section.
+- [ ] Every checklist item includes purpose, change points, acceptance criteria, suggested commands, and estimated impact radius.
+- [ ] No checklist item is so large it cannot plausibly fit in one reviewable PR.
+
 ## Failure Handling
 
 - If the audit is incomplete, keep the plan narrow and call out the missing audit areas.
@@ -96,6 +112,6 @@ Add explicit pause points such as:
 
 ## Done Criteria
 
-- `OSS_PLAN.md` can be copied directly into GitHub with minimal editing.
-- Every item includes purpose, change points, acceptance criteria, commands, and impact.
-- The plan is ordered, scoped, and stoppable.
+- `OSS_PLAN.md` exists and contains a scope summary, staged markdown checklist, execution order, explicit stop points, and a minimum shippable subset section.
+- Every checklist item includes purpose, change points, acceptance criteria, suggested commands, and estimated impact radius.
+- No item is so large it cannot fit in one reviewable PR.
