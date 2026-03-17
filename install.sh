@@ -25,7 +25,7 @@ fi
 mkdir -p "$SKILLS_DIR"
 
 # Only replace this pack's own skill directories — never touch unrelated entries
-for skill_dir in "$CLONE_DIR"/skills/*/; do
+for skill_dir in "$CLONE_DIR"/skills/oss-*/; do
   [ -d "$skill_dir" ] || continue
   skill_name="$(basename "$skill_dir")"
   target_dir="$SKILLS_DIR/$skill_name"

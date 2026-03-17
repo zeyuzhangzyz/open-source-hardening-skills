@@ -24,7 +24,7 @@ if (Test-Path $gitDir) {
 New-Item -ItemType Directory -Force -Path $SkillsDir | Out-Null
 
 # Only replace this pack's own skill directories — never touch unrelated entries
-Get-ChildItem -Path (Join-Path $CloneDir "skills") -Directory | ForEach-Object {
+Get-ChildItem -Path (Join-Path $CloneDir "skills") -Directory -Filter "oss-*" | ForEach-Object {
   $targetDir = Join-Path $SkillsDir $_.Name
   if (Test-Path $targetDir) {
     Remove-Item -Recurse -Force $targetDir
