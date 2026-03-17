@@ -124,6 +124,22 @@ If the loop returns:
 - Do not push through later stages when earlier artifacts are incomplete.
 - Do not hide rollback reasons; document them in `OSS_HARDENING_STATUS.md`.
 
+## Anti-patterns
+
+- Do not force manual stage-by-stage operation when the user asked for continuous execution.
+- Do not auto-advance when a stage's stop/rollback condition has been triggered.
+- Do not claim the pipeline is complete if the review loop still reports blockers.
+- Do not hide rollback reasons; document them in `OSS_HARDENING_STATUS.md`.
+
+## Self-check
+
+Before declaring this stage complete, verify:
+
+- [ ] `OSS_HARDENING_STATUS.md` exists and lists current stage, completed artifacts, execution mode, unresolved maintainer decisions, next command, and stop/rollback conditions.
+- [ ] Every completed stage has a corresponding artifact or an explicit skip reason.
+- [ ] If execution paused, the blocker and pause stage are recorded.
+- [ ] If execution finished, the final status includes the review-loop verdict and score, or an explicit reason the review loop did not run.
+
 ## Failure Handling
 
 - If a later stage reveals a new foundational issue, return to `/oss-audit` or `/oss-plan` and record why.
@@ -134,9 +150,6 @@ If the loop returns:
 
 ## Done Criteria
 
-- The user can see which stage is complete, which artifact was produced, and what command should run next.
-- The full chain can complete in one run when the repository is ready.
-- Every stage boundary has a stop or rollback rule.
-- The hardening work remains incremental and reviewable.
-- The final state includes an external maintainer-style readiness review loop.
-- When relevant, licensing, citation, and reproducibility gaps are surfaced before claiming readiness.
+- `OSS_HARDENING_STATUS.md` exists and records current stage, completed artifacts, execution mode, unresolved decisions, next command, and stop/rollback conditions.
+- No later stage is marked complete while a required earlier-stage artifact is missing, unless a skip reason is recorded.
+- The final status records either successful completion through review-loop or the exact blocker that prevented completion.
