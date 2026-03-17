@@ -96,6 +96,22 @@ Examples of invalid churn:
 - Prefer touched-file formatting/linting when possible.
 - Record commands and outcomes in `OSS_REFACTOR.md`.
 
+## Anti-patterns
+
+- Do not modify files outside the planned change list.
+- Do not do repo-wide formatting, rename sweeps, or directory churn unrelated to the selected scope.
+- Do not add multiple new tools when one light tool or existing tooling is enough.
+- Do not allow behavior changes to slip in under the label of "refactor".
+
+## Self-check
+
+Before declaring this stage complete, verify:
+
+- [ ] `OSS_REFACTOR.md` exists and records selected scope, tooling choices, touched paths, commands run, and rollback notes if any.
+- [ ] The artifact includes a `Changed now` section and a `Deferred intentionally` section.
+- [ ] Any new tool or config added is explicitly justified in the artifact.
+- [ ] Verification commands and outcomes are recorded after the final change set.
+
 ## Failure Handling
 
 - If tooling installation is heavy or conflicts with the repo, stop after documenting the recommendation and keep code changes minimal.
@@ -104,6 +120,6 @@ Examples of invalid churn:
 
 ## Done Criteria
 
-- The refactor improves maintainability without broad churn.
-- Any new tooling is justified, minimal, and documented.
-- `OSS_REFACTOR.md` explains what changed, what was deferred, and how it was verified.
+- `OSS_REFACTOR.md` exists and lists selected scope, tooling choices, touched paths, commands run, and rollback notes.
+- The artifact includes a `Changed now` section and a `Deferred intentionally` section.
+- All new tooling or config additions are minimal and explicitly justified.
