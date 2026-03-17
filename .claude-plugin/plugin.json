@@ -1,0 +1,22 @@
+{
+  "name": "open-source-hardening-skills",
+  "version": "0.2.0",
+  "description": "Open-source hardening skill pack for Claude Code: audit, plan, refactor, tests, CI, docs, review, review-loop, hardening orchestration, and reference search.",
+  "author": {
+    "name": "zeyuzhangzyz"
+  },
+  "homepage": "https://github.com/zeyuzhangzyz/open-source-hardening-skills",
+  "repository": "https://github.com/zeyuzhangzyz/open-source-hardening-skills",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "skills",
+    "open-source",
+    "hardening",
+    "ci",
+    "tests",
+    "docs",
+    "security"
+  ],
+  "skills": "./skills/"
+}

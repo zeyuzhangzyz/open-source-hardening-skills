@@ -1,0 +1,60 @@
+schema_version: 1
+kind: claude-code-plugin-mirror
+name: open-source-hardening-skills
+version: "0.2.0"
+description: Open-source hardening skill pack for Claude Code.
+author:
+  name: zeyuzhangzyz
+homepage: https://github.com/zeyuzhangzyz/open-source-hardening-skills
+repository: https://github.com/zeyuzhangzyz/open-source-hardening-skills
+license: MIT
+keywords:
+  - claude-code
+  - skills
+  - open-source
+  - hardening
+  - ci
+  - tests
+  - docs
+  - security
+claude_code:
+  manifest: .claude-plugin/plugin.json
+  skills: ./skills/
+  standalone_install_dir: ~/.claude/skills
+skills:
+  - name: oss-audit
+    path: skills/oss-audit/SKILL.md
+    outputs: [OSS_AUDIT.md]
+  - name: oss-plan
+    path: skills/oss-plan/SKILL.md
+    outputs: [OSS_PLAN.md]
+  - name: oss-refactor
+    path: skills/oss-refactor/SKILL.md
+    outputs: [OSS_REFACTOR.md]
+  - name: oss-tests
+    path: skills/oss-tests/SKILL.md
+    outputs: [OSS_TEST_STRATEGY.md]
+  - name: oss-ci
+    path: skills/oss-ci/SKILL.md
+    outputs: [OSS_CI.md]
+  - name: oss-docs
+    path: skills/oss-docs/SKILL.md
+    outputs: [OSS_DOCS.md]
+  - name: oss-review
+    path: skills/oss-review/SKILL.md
+    outputs: [OSS_REVIEW.md, OSS_HARDENING_STATUS.md]
+  - name: oss-review-loop
+    path: skills/oss-review-loop/SKILL.md
+    outputs: [OSS_REVIEW_LOOP.md, OSS_HARDENING_STATUS.md]
+  - name: oss-hardening
+    path: skills/oss-hardening/SKILL.md
+    outputs: [OSS_HARDENING_STATUS.md]
+  - name: oss-search
+    path: skills/oss-search/SKILL.md
+optional_integrations:
+  - name: codex-mcp
+    required_for:
+      - oss-review
+      - oss-review-loop
+validation:
+  command: python -m unittest discover -s tests -v
