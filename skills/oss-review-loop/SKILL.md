@@ -205,6 +205,22 @@ When the loop ends:
    - estimate which stage should be revisited next
    - say whether the repo is close to release or still materially blocked
 
+## Anti-patterns
+
+- Do not ask for re-review before applying and verifying the minimum fixes from the previous round.
+- Do not broaden scope beyond the reviewer's minimum-fix package.
+- Do not reset context each round; use `mcp__codex__codex-reply` with the saved `threadId` to maintain thread continuity.
+- Do not advance past `MAX_ROUNDS` without surfacing remaining blockers.
+
+## Self-check
+
+Before declaring this stage complete, verify:
+
+- [ ] `OSS_REVIEW_LOOP.md` contains round entries with score, verdict, weaknesses, minimum fixes, actions taken, verification outcomes, and raw response.
+- [ ] `OSS_HARDENING_STATUS.md` reflects the latest round number, score, verdict, and next action.
+- [ ] Round count does not exceed 4.
+- [ ] If the loop stopped without a positive result, remaining blockers and the recommended return stage are explicit.
+
 ## Key Rules
 
 - ALWAYS use `config: {"model_reasoning_effort": "xhigh"}`
@@ -236,8 +252,14 @@ mcp__codex__codex-reply:
     Same format: Score, Verdict, Remaining Weaknesses, Minimum Fixes, Return Stage for each fix.
 ```
 
+## Failure Handling
+
+- If the external reviewer is unreachable, record the failure in `OSS_REVIEW_LOOP.md` and surface to the user.
+- If a round's minimum fixes cannot all be applied in one session, apply the highest-leverage fixes and document deferred items explicitly.
+- If the loop reaches `MAX_ROUNDS` without a positive verdict, stop, list remaining blockers, and recommend a return stage.
+
 ## Done Criteria
 
-- `OSS_REVIEW_LOOP.md` documents up to four rounds of review, fixes, and re-review
-- `OSS_HARDENING_STATUS.md` reflects the latest loop state
-- The repository either reaches a positive readiness assessment or ends with a clear, ranked blocker list
+- `OSS_REVIEW_LOOP.md` contains 1 to 4 round entries with assessment, minimum fixes, actions taken, verification outcomes, raw response, and status.
+- `OSS_HARDENING_STATUS.md` reflects the latest loop state.
+- The final state is either a positive readiness assessment or a clear blocker list with a recommended return stage.
