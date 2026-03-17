@@ -58,23 +58,35 @@ claude
 
 ### 2. 安装技能
 
-macOS / Linux / WSL：
+**macOS / Linux / WSL（一行命令安装）：**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/zeyuzhangzyz/open-source-hardening-skills/main/install.sh | bash
+```
+
+或者克隆后手动运行：
 
 ```bash
 git clone https://github.com/zeyuzhangzyz/open-source-hardening-skills.git
-mkdir -p ~/.claude/skills
-cp -r open-source-hardening-skills/skills/* ~/.claude/skills/
+cd open-source-hardening-skills
+bash install.sh
 ```
 
-Windows PowerShell：
+**Windows PowerShell（一行命令安装）：**
+
+```powershell
+irm https://raw.githubusercontent.com/zeyuzhangzyz/open-source-hardening-skills/main/install.ps1 | iex
+```
+
+或者克隆后手动运行：
 
 ```powershell
 git clone https://github.com/zeyuzhangzyz/open-source-hardening-skills.git
-New-Item -ItemType Directory -Force "$HOME\.claude\skills" | Out-Null
-Copy-Item -Recurse -Force ".\open-source-hardening-skills\skills\*" "$HOME\.claude\skills\"
+cd open-source-hardening-skills
+.\install.ps1
 ```
 
-复制完成后如果技能未出现，重启 Claude Code 会话。
+安装脚本是幂等的：重复运行会将 skills 更新至最新版本。脚本只替换本 skill 包自带的 `oss-*` 目录，不会影响你已安装的其他 skills。
 
 ### 3. 可选：为 review 技能准备 Codex MCP
 

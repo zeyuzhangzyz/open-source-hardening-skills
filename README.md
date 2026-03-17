@@ -58,23 +58,35 @@ claude
 
 ### 2. Install the skills
 
-macOS / Linux / WSL:
+**macOS / Linux / WSL (one-liner):**
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/zeyuzhangzyz/open-source-hardening-skills/main/install.sh | bash
+```
+
+Or clone and run manually:
 
 ```bash
 git clone https://github.com/zeyuzhangzyz/open-source-hardening-skills.git
-mkdir -p ~/.claude/skills
-cp -r open-source-hardening-skills/skills/* ~/.claude/skills/
+cd open-source-hardening-skills
+bash install.sh
 ```
 
-Windows PowerShell:
+**Windows PowerShell (one-liner):**
+
+```powershell
+irm https://raw.githubusercontent.com/zeyuzhangzyz/open-source-hardening-skills/main/install.ps1 | iex
+```
+
+Or clone and run manually:
 
 ```powershell
 git clone https://github.com/zeyuzhangzyz/open-source-hardening-skills.git
-New-Item -ItemType Directory -Force "$HOME\.claude\skills" | Out-Null
-Copy-Item -Recurse -Force ".\open-source-hardening-skills\skills\*" "$HOME\.claude\skills\"
+cd open-source-hardening-skills
+.\install.ps1
 ```
 
-If the skills do not appear after copying, restart the Claude Code session.
+The install scripts are idempotent: re-running them updates the skills to the latest version. They only replace this pack's own `oss-*` skill directories and never touch other skills you may have installed.
 
 ### 3. Optional: set up Codex MCP for review skills
 
