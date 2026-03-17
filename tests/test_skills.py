@@ -135,5 +135,42 @@ class RepositoryMetadataTests(unittest.TestCase):
                 self.assertNotIn("FORGE", text, f"{readme}: found removed acronym 'FORGE'")
 
 
+REQUIRED_SECTIONS = ["## Anti-patterns", "## Self-check", "## Failure Handling", "## Done Criteria"]
+
+
+class PromptStructureTests(unittest.TestCase):
+    def _skill_files(self):
+        return [SKILLS_DIR / s / "SKILL.md" for s in EXPECTED_SKILLS]
+
+    def test_required_sections_present(self) -> None:
+        for path in self._skill_files():
+            with self.subTest(skill=path.parent.name):
+                text = path.read_text(encoding="utf-8")
+                for section in REQUIRED_SECTIONS:
+                    self.assertIn(
+                        section, text,
+                        f"{path.parent.name}: missing '{section}'"
+                    )
+
+    def test_section_order(self) -> None:
+        """Anti-patterns and Self-check must appear before Failure Handling."""
+        for path in self._skill_files():
+            with self.subTest(skill=path.parent.name):
+                text = path.read_text(encoding="utf-8")
+                idx_anti = text.find("## Anti-patterns")
+                idx_self = text.find("## Self-check")
+                idx_fail = text.find("## Failure Handling")
+                self.assertGreater(idx_anti, -1,
+                    f"{path.parent.name}: '## Anti-patterns' not found")
+                self.assertGreater(idx_self, -1,
+                    f"{path.parent.name}: '## Self-check' not found")
+                self.assertGreater(idx_fail, -1,
+                    f"{path.parent.name}: '## Failure Handling' not found")
+                self.assertLess(idx_anti, idx_fail,
+                    f"{path.parent.name}: ## Anti-patterns must appear before ## Failure Handling")
+                self.assertLess(idx_self, idx_fail,
+                    f"{path.parent.name}: ## Self-check must appear before ## Failure Handling")
+
+
 if __name__ == "__main__":
     unittest.main()
