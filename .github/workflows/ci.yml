@@ -25,3 +25,28 @@ jobs:
 
       - name: Run tests
         run: python -m unittest discover -s tests -v
+
+  windows-smoke:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Smoke-test install.ps1
+        shell: pwsh
+        run: |
+          $skillsDir = "$env:RUNNER_TEMP\skills-test"
+          $cloneDir  = "$env:RUNNER_TEMP\repo-clone"
+          .\install.ps1 -SkillsDir $skillsDir -CloneDir $cloneDir
+          $installed = Get-ChildItem -Path $skillsDir -Directory -Filter "oss-*"
+          if ($installed.Count -lt 10) {
+            Write-Error "Expected 10 oss-* skills, found $($installed.Count)"
+            exit 1
+          }
+          Write-Host "install.ps1 OK: $($installed.Count) skills installed"
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run tests on Windows
+        run: python -m unittest discover -s tests -v

@@ -7,6 +7,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ## [Unreleased]
 
 ### Added
+- Official Codex MCP tool dispatch priority in `oss-review` and `oss-review-loop` (prefer `mcp__codex__codex` over fallbacks).
+- `CODE_OF_CONDUCT.md`: Contributor Covenant v2.1.
+- Metadata consistency tests: version and skill-list parity across `plugin.yaml`, `.claude-plugin/plugin.json`, and `skills/`.
+- Windows CI smoke test for `install.ps1`.
+
+### Changed
+- ARIS references updated to v0.3+ multi-IDE ecosystem across README.md and README_CN.md.
+
+---
+
+## [0.2.0] - 2026-04-06
+
+### Added
 - `## Anti-patterns` section in all 10 skills: explicit prohibitions for the most common AI failure modes per stage.
 - `## Self-check` section in all 10 skills: verifiable completion checklist that mirrors Done Criteria.
 - `install.sh`: idempotent bash installer for macOS/Linux/WSL.

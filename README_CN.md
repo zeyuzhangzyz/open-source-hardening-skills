@@ -106,6 +106,19 @@ claude mcp add codex -s user -- codex mcp-server
 /oss-hardening .
 ```
 
+完整运行后，流水线会在你的仓库根目录生成以下产物：
+
+```text
+OSS_AUDIT.md             <- 7 个维度的差距分析
+OSS_PLAN.md              <- 带验收标准的 PR 就绪清单
+OSS_REFACTOR.md          <- 已应用的结构调整摘要
+OSS_TEST_STRATEGY.md     <- 测试框架、命令和 mock 策略
+OSS_CI.md                <- CI 工作流文档
+OSS_DOCS.md              <- 文档改进清单
+OSS_REVIEW_LOOP.md       <- 含每轮评分的迭代审查日志
+OSS_HARDENING_STATUS.md  <- 最终评定、分数和后续步骤
+```
+
 ## 与 ARIS 配合使用
 
 Open Source Hardening Skills 会安装到与 ARIS 相同的 `~/.claude/skills/` 目录，无冲突共存。兼容 ARIS v0.3+ 和 ARIS-Code CLI。

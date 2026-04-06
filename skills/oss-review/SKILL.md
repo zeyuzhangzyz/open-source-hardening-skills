@@ -2,7 +2,7 @@
 name: oss-review
 description: Get a deep external review of an open-source hardening pass from Codex MCP. Use when the user wants a senior maintainer-style review of repository or paper-code release readiness, wants a score and minimum-fix list before publishing, or wants the oss-hardening pipeline to end with an external open-source quality gate.
 argument-hint: [repo-path-or-scope]
-allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit, mcp__codex__codex, mcp__codex__codex-reply
+allowed-tools: Bash(*), Read, Grep, Glob, Write, Edit, Skill, mcp__codex__codex, mcp__codex__codex-reply
 ---
 
 # OSS Review via Codex MCP

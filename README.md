@@ -106,6 +106,19 @@ claude mcp add codex -s user -- codex mcp-server
 /oss-hardening .
 ```
 
+After a full run, the pipeline generates these artifacts in your repo root:
+
+```text
+OSS_AUDIT.md             <- gap analysis across 7 dimensions
+OSS_PLAN.md              <- PR-ready checklist with acceptance criteria
+OSS_REFACTOR.md          <- summary of structural changes applied
+OSS_TEST_STRATEGY.md     <- test framework, commands, and mock strategy
+OSS_CI.md                <- CI workflow documentation
+OSS_DOCS.md              <- documentation improvement checklist
+OSS_REVIEW_LOOP.md       <- iterative review log with scores per round
+OSS_HARDENING_STATUS.md  <- final verdict, score, and next steps
+```
+
 ## Use with ARIS
 
 Open Source Hardening Skills installs to the same `~/.claude/skills/` directory as ARIS and works alongside ARIS skills without conflicts. Compatible with ARIS v0.3+ and ARIS-Code CLI.

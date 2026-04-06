@@ -138,6 +138,61 @@ class RepositoryMetadataTests(unittest.TestCase):
 REQUIRED_SECTIONS = ["## Anti-patterns", "## Self-check", "## Failure Handling", "## Done Criteria"]
 
 
+class MetadataConsistencyTests(unittest.TestCase):
+    """Verify version and skill-list parity across plugin.yaml, plugin.json, and skills/."""
+
+    def _load_yaml_simple(self, path: Path) -> dict:
+        """Minimal YAML-like parser for the flat fields we need."""
+        data: dict[str, str] = {}
+        skill_names: list[str] = []
+        text = path.read_text(encoding="utf-8")
+        in_skills_section = False
+        for line in text.splitlines():
+            # top-level scalar fields
+            if line.startswith("version:"):
+                data["version"] = line.split(":", 1)[1].strip().strip('"').strip("'")
+            # detect top-level sections (no leading whitespace)
+            if line and not line[0].isspace() and line.endswith(":"):
+                in_skills_section = line.strip() == "skills:"
+            # skill name entries only under the skills: section
+            if in_skills_section:
+                stripped = line.strip()
+                if stripped.startswith("- name:"):
+                    skill_names.append(stripped.split(":", 1)[1].strip())
+        data["skill_names"] = ",".join(sorted(skill_names))
+        return data
+
+    def _load_json(self, path: Path) -> dict:
+        import json
+        return json.loads(path.read_text(encoding="utf-8"))
+
+    def test_version_matches_across_manifests(self) -> None:
+        yaml_path = ROOT / "plugin.yaml"
+        json_path = ROOT / ".claude-plugin" / "plugin.json"
+        if not yaml_path.exists() or not json_path.exists():
+            self.skipTest("manifest files not found")
+        yaml_data = self._load_yaml_simple(yaml_path)
+        json_data = self._load_json(json_path)
+        self.assertEqual(
+            yaml_data["version"],
+            json_data["version"],
+            "plugin.yaml and plugin.json versions must match",
+        )
+
+    def test_skill_names_match_directories(self) -> None:
+        yaml_path = ROOT / "plugin.yaml"
+        if not yaml_path.exists():
+            self.skipTest("plugin.yaml not found")
+        yaml_data = self._load_yaml_simple(yaml_path)
+        yaml_skills = set(yaml_data["skill_names"].split(",")) if yaml_data["skill_names"] else set()
+        dir_skills = {p.name for p in (ROOT / "skills").iterdir() if p.is_dir()}
+        self.assertEqual(
+            yaml_skills,
+            dir_skills,
+            "Skill names in plugin.yaml must match skill directories",
+        )
+
+
 class PromptStructureTests(unittest.TestCase):
     def _skill_files(self):
         return [SKILLS_DIR / s / "SKILL.md" for s in EXPECTED_SKILLS]
