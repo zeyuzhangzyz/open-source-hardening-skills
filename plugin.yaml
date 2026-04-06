@@ -53,8 +53,11 @@ skills:
     path: skills/oss-search/SKILL.md
 optional_integrations:
   - name: codex-mcp
+    description: "Official Codex MCP tools (mcp__codex__codex, mcp__codex__codex-reply) for external review"
+    setup: "npm install -g @openai/codex && codex setup && claude mcp add codex -s user -- codex mcp-server"
     required_for:
       - oss-review
       - oss-review-loop
+    fallback: "codex:rescue skill via Codex CLI runtime"
 validation:
   command: python -m unittest discover -s tests -v

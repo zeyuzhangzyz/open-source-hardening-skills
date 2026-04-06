@@ -11,6 +11,14 @@ Get a deep external review of a repository's open-source readiness from Codex MC
 
 ## Context: $ARGUMENTS
 
+## Tool Dispatch (priority order)
+
+1. **Official Codex MCP tools** (preferred): call `mcp__codex__codex` for the initial review and `mcp__codex__codex-reply` for follow-ups. These are the canonical entry points — always try them first.
+2. **Codex skill helpers**: if the Codex MCP tools are unavailable or return an error, invoke the `codex:rescue` skill as a fallback to delegate the review task through the Codex CLI runtime.
+3. **Manual fallback**: if neither is reachable, record the failure in `OSS_REVIEW.md`, surface the blocker to the user, and suggest they verify their Codex MCP setup (`codex setup && claude mcp add codex -s user -- codex mcp-server`).
+
+Never skip step 1 and jump to a fallback. Always attempt the official tool first.
+
 ## Constants
 
 - REVIEWER_MODEL = `gpt-5.4`. Use a currently available Codex model; prefer `gpt-5.4`, `gpt-5.3-codex`, or `gpt-5.2-codex`.
@@ -82,9 +90,9 @@ Read the highest-signal files first:
 - security/changelog docs if present
 - the `OSS_*.md` hardening artifacts listed above
 
-### Step 2: Run the initial external review
+### Step 2: Run the initial external review via official Codex MCP tool
 
-Send a detailed prompt with xhigh reasoning:
+Call the official `mcp__codex__codex` tool directly. This is the preferred entry point — do not wrap it in Bash or use any intermediate layer.
 
 ```text
 mcp__codex__codex:
@@ -120,13 +128,25 @@ mcp__codex__codex:
     Be direct and practical. Focus on the smallest fixes that materially improve open-source quality.
 ```
 
-### Step 3: Continue with follow-up review if needed
+Save the returned `threadId` immediately — it is required for all follow-up calls.
 
-Use `mcp__codex__codex-reply` with the returned `threadId` when:
+If `mcp__codex__codex` fails (tool not found, connection error, timeout), fall back to `codex:rescue` skill. If that also fails, record the failure and surface the blocker.
+
+### Step 3: Continue with follow-up review via official Codex MCP reply tool
+
+Use `mcp__codex__codex-reply` (not a new `mcp__codex__codex` call) with the saved `threadId` when:
 
 - you need clarification on a weakness
 - you want the reviewer to reassess after targeted fixes
 - you want a narrower "minimum launchable subset"
+
+```text
+mcp__codex__codex-reply:
+  threadId: [saved from Step 2]
+  config: {"model_reasoning_effort": "xhigh"}
+  prompt: |
+    [follow-up question or re-assessment request]
+```
 
 Useful follow-up prompts:
 
@@ -200,7 +220,9 @@ Before declaring this stage complete, verify:
 
 ## Key Rules
 
+- ALWAYS call the official `mcp__codex__codex` / `mcp__codex__codex-reply` tools first; only fall back to `codex:rescue` if the MCP endpoint is unreachable
 - ALWAYS use `config: {"model_reasoning_effort": "xhigh"}`
+- Save and reuse `threadId` for all follow-up calls within the same review session
 - Preserve the full raw reviewer response
 - Ask for minimum fixes, not an aspirational roadmap
 - Treat missing tests, broken setup, missing docs, missing license or citation path, irreproducible claims, and unsafe release posture as higher severity than polish issues
@@ -208,7 +230,8 @@ Before declaring this stage complete, verify:
 
 ## Failure Handling
 
-- If the external reviewer is unreachable or returns an unusable response, record the failure in `OSS_REVIEW.md` and surface the blocker to the user.
+- If `mcp__codex__codex` is unreachable, retry once. If still unavailable, fall back to `codex:rescue` skill. If neither works, record the failure in `OSS_REVIEW.md` with the error details and surface the blocker to the user with setup instructions.
+- If the reviewer returns an unusable or truncated response, use `mcp__codex__codex-reply` to request completion on the same thread.
 - If the review reveals a foundational gap, return to the recommended stage rather than patching surface issues.
 - If prior review history exists, append the new round rather than overwriting it.
 

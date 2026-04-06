@@ -4,7 +4,7 @@
 
 Open Source Hardening Skills 是面向 [ARIS](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep) / Claude Code 的技能包，帮助将任意仓库——应用、库、CLI 工具或论文代码——硬化成结构清晰、可测试、易维护的开源项目。
 
-> **与 ARIS 天然配合。** ARIS 在睡眠中自主完成科研；Open Source Hardening Skills 是下一步，将产出的代码整理成可公开发布的状态。
+> **与 ARIS 天然配合。** ARIS（v0.3+）是一个多 IDE 自主科研生态系统，拥有 31+ 技能，支持 Claude Code、Codex CLI、Cursor、Trae 等。Open Source Hardening Skills 是下一步，将产出的代码整理成可公开发布的状态。
 
 ## 工作流
 
@@ -88,15 +88,17 @@ cd open-source-hardening-skills
 
 安装脚本是幂等的：重复运行会将 skills 更新至最新版本。脚本只替换本 skill 包自带的 `oss-*` 目录，不会影响你已安装的其他 skills。
 
-### 3. 可选：为 review 技能准备 Codex MCP
+### 3. 可选：为 review 技能配置 Codex
 
-`/oss-review` 和 `/oss-review-loop` 需要 Codex MCP（配置方式与 ARIS 相同），其余 8 个技能不需要。
+`/oss-review` 和 `/oss-review-loop` 通过官方 Codex MCP 工具（`mcp__codex__codex`、`mcp__codex__codex-reply`）调用外部审阅者，其余 8 个技能不需要。
 
 ```bash
 npm install -g @openai/codex
 codex setup   # 提示时设置模型为 gpt-5.4
 claude mcp add codex -s user -- codex mcp-server
 ```
+
+> **提示：** ARIS v0.3+ 还提供了其他 review 桥接方案（Claude、Gemini、任意 OpenAI 兼容 API）。如果你已有配置，`/oss-review` 会使用可用的 Codex MCP 端点。
 
 ### 4. 在目标仓库中运行
 
@@ -106,7 +108,7 @@ claude mcp add codex -s user -- codex mcp-server
 
 ## 与 ARIS 配合使用
 
-Open Source Hardening Skills 会安装到与 ARIS 相同的 `~/.claude/skills/` 目录，无冲突共存。
+Open Source Hardening Skills 会安装到与 ARIS 相同的 `~/.claude/skills/` 目录，无冲突共存。兼容 ARIS v0.3+ 和 ARIS-Code CLI。
 
 ```bash
 # ARIS 科研流程结束后，对产出代码进行硬化：
@@ -142,7 +144,7 @@ python -m unittest discover -s tests -v
 
 ## 致谢
 
-- **[ARIS](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep)** — 本项目设计为与 ARIS 配合使用的自主科研技能包；技能布局直接遵循 ARIS 约定。
+- **[ARIS](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep)** — 多 IDE 自主科研生态系统（31+ 技能，Claude Code / Codex CLI / Cursor / Trae），本项目设计为与其配合使用；技能布局直接遵循 ARIS 约定。
 - **[Claude Code](https://github.com/anthropics/claude-code)** — Anthropic 的 CLI，执行骨干。
 
 ## 许可证

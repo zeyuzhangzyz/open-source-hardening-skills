@@ -11,6 +11,14 @@ Autonomously iterate: review -> implement the minimum hardening fixes -> re-revi
 
 ## Context: $ARGUMENTS
 
+## Tool Dispatch (priority order)
+
+1. **Official Codex MCP tools** (preferred): call `mcp__codex__codex` for round 1 and `mcp__codex__codex-reply` for rounds 2+. These are the canonical entry points — always try them first.
+2. **Codex skill helpers**: if the Codex MCP tools are unavailable or return an error, invoke the `codex:rescue` skill as a fallback to delegate the review task through the Codex CLI runtime.
+3. **Manual fallback**: if neither is reachable, record the failure in `OSS_REVIEW_LOOP.md`, surface the blocker to the user, and suggest they verify their Codex MCP setup.
+
+Never skip step 1 and jump to a fallback. Always attempt the official tool first.
+
 ## Constants
 
 - MAX_ROUNDS = 4
@@ -68,15 +76,15 @@ Also update `OSS_HARDENING_STATUS.md` after every round with:
 
 ### Loop (repeat up to MAX_ROUNDS)
 
-#### Phase A: Review
+#### Phase A: Review via official Codex MCP tools
 
-Send comprehensive repository context to the external reviewer:
+**Round 1** — call `mcp__codex__codex` directly (the official tool, not a Bash wrapper):
 
 ```text
 mcp__codex__codex:
   config: {"model_reasoning_effort": "xhigh"}
   prompt: |
-    [Round N/MAX_ROUNDS of open-source review loop]
+    [Round 1/MAX_ROUNDS of open-source review loop]
 
     Repository briefing:
     [purpose, setup commands, verification commands, hardening artifacts, known gaps]
@@ -102,7 +110,11 @@ mcp__codex__codex:
     Be direct and practical. Focus on the smallest fix package that materially improves open-source quality.
 ```
 
-If this is round 2+, use `mcp__codex__codex-reply` with the saved `threadId` to maintain conversation context.
+Save the returned `threadId` immediately after round 1 — it is required for all subsequent rounds.
+
+**Round 2+** — call `mcp__codex__codex-reply` with the saved `threadId` to maintain conversation context. Do NOT create a new thread for each round.
+
+If `mcp__codex__codex` is unreachable, fall back per the Tool Dispatch priority order above.
 
 #### Phase B: Parse Assessment
 
@@ -207,9 +219,11 @@ When the loop ends:
 
 ## Anti-patterns
 
+- Do not bypass the official `mcp__codex__codex` / `mcp__codex__codex-reply` tools by shelling out to `codex` directly in Bash — the MCP tools handle authentication, threading, and config automatically.
 - Do not ask for re-review before applying and verifying the minimum fixes from the previous round.
 - Do not broaden scope beyond the reviewer's minimum-fix package.
 - Do not reset context each round; use `mcp__codex__codex-reply` with the saved `threadId` to maintain thread continuity.
+- Do not create a new `mcp__codex__codex` thread for rounds 2+; always use `mcp__codex__codex-reply`.
 - Do not advance past `MAX_ROUNDS` without surfacing remaining blockers.
 
 ## Self-check
@@ -223,19 +237,22 @@ Before declaring this stage complete, verify:
 
 ## Key Rules
 
+- ALWAYS call the official `mcp__codex__codex` / `mcp__codex__codex-reply` tools first; only fall back to `codex:rescue` if the MCP endpoint is unreachable
 - ALWAYS use `config: {"model_reasoning_effort": "xhigh"}`
-- Save `threadId` from the first call and use `mcp__codex__codex-reply` for subsequent rounds
+- Save `threadId` from the round 1 `mcp__codex__codex` call and reuse it with `mcp__codex__codex-reply` for all subsequent rounds — never create a new thread mid-loop
 - Preserve the full raw reviewer response
 - Ask for minimum fixes, not an aspirational rewrite
 - Fix issues before re-reviewing; do not just promise changes
 - Treat broken setup, missing tests, missing CI, weak docs, missing license or citation path, irreproducible claims, and unsafe release posture as higher severity than polish
 - Keep the log self-contained
 
-## Prompt Template for Round 2+
+## Prompt Template for Round 2+ (official `mcp__codex__codex-reply` tool)
+
+Always use the official `mcp__codex__codex-reply` tool for rounds 2+. This preserves thread context and avoids redundant briefings.
 
 ```text
 mcp__codex__codex-reply:
-  threadId: [saved from round 1]
+  threadId: [saved from round 1 mcp__codex__codex call]
   config: {"model_reasoning_effort": "xhigh"}
   prompt: |
     [Round N update]
@@ -254,7 +271,8 @@ mcp__codex__codex-reply:
 
 ## Failure Handling
 
-- If the external reviewer is unreachable, record the failure in `OSS_REVIEW_LOOP.md` and surface to the user.
+- If `mcp__codex__codex` is unreachable, retry once. If still unavailable, fall back to `codex:rescue` skill. If neither works, record the failure in `OSS_REVIEW_LOOP.md` with the error details and surface the blocker to the user with setup instructions.
+- If the reviewer returns a truncated response, use `mcp__codex__codex-reply` on the same thread to request completion.
 - If a round's minimum fixes cannot all be applied in one session, apply the highest-leverage fixes and document deferred items explicitly.
 - If the loop reaches `MAX_ROUNDS` without a positive verdict, stop, list remaining blockers, and recommend a return stage.
 

@@ -107,7 +107,7 @@ Stop here if:
 
 ### 7. Review Loop
 
-Run `/oss-review-loop` after docs so the pipeline ends with an external Codex quality gate and up to four rounds of iterative fixes.
+Run `/oss-review-loop` after docs so the pipeline ends with an external Codex quality gate and up to four rounds of iterative fixes. The review loop uses the official `mcp__codex__codex` / `mcp__codex__codex-reply` tools as its primary entry point.
 
 If the loop returns:
 

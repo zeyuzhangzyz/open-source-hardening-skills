@@ -4,7 +4,7 @@
 
 Open Source Hardening Skills is a skill pack for [ARIS](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep) / Claude Code that hardens any repository - app, library, CLI tool, or research paper codebase - into a readable, testable, maintainable open-source project.
 
-> **Pairs naturally with ARIS.** ARIS runs research autonomously overnight; Open Source Hardening Skills is the next step that gets the resulting code ready for public release.
+> **Pairs naturally with ARIS.** ARIS (v0.3+) is a multi-IDE autonomous research ecosystem with 31+ skills supporting Claude Code, Codex CLI, Cursor, Trae, and more. Open Source Hardening Skills is the next step that gets the resulting code ready for public release.
 
 ## Workflow
 
@@ -88,15 +88,17 @@ cd open-source-hardening-skills
 
 The install scripts are idempotent: re-running them updates the skills to the latest version. They only replace this pack's own `oss-*` skill directories and never touch other skills you may have installed.
 
-### 3. Optional: set up Codex MCP for review skills
+### 3. Optional: set up Codex for review skills
 
-`/oss-review` and `/oss-review-loop` require Codex MCP (same setup as ARIS). The other 8 skills work without it.
+`/oss-review` and `/oss-review-loop` call the external reviewer via the official Codex MCP tools (`mcp__codex__codex`, `mcp__codex__codex-reply`). The other 8 skills work without it.
 
 ```bash
 npm install -g @openai/codex
 codex setup   # set model to gpt-5.4 when prompted
 claude mcp add codex -s user -- codex mcp-server
 ```
+
+> **Tip:** ARIS v0.3+ also ships alternative review bridges (Claude, Gemini, any OpenAI-compatible API). If you already have one configured, `/oss-review` will use whichever Codex MCP endpoint is available.
 
 ### 4. Run in your target repository
 
@@ -106,7 +108,7 @@ claude mcp add codex -s user -- codex mcp-server
 
 ## Use with ARIS
 
-Open Source Hardening Skills installs to the same `~/.claude/skills/` directory as ARIS and works alongside ARIS skills without conflicts.
+Open Source Hardening Skills installs to the same `~/.claude/skills/` directory as ARIS and works alongside ARIS skills without conflicts. Compatible with ARIS v0.3+ and ARIS-Code CLI.
 
 ```bash
 # After an ARIS research run, harden the resulting code:
@@ -142,7 +144,7 @@ Open a PR when done. Each skill directory name must match the `name` field in th
 
 ## Acknowledgements
 
-- **[ARIS](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep)** - autonomous ML research skill pack that this project is designed to complement; the skill layout follows ARIS conventions directly.
+- **[ARIS](https://github.com/wanshuiyin/Auto-claude-code-research-in-sleep)** - multi-IDE autonomous research ecosystem (31+ skills, Claude Code / Codex CLI / Cursor / Trae) that this project is designed to complement; the skill layout follows ARIS conventions directly.
 - **[Claude Code](https://github.com/anthropics/claude-code)** - Anthropic's CLI, the execution backbone.
 
 ## License
