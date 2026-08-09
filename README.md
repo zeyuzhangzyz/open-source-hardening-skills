@@ -1,3 +1,5 @@
+
+
 # Open Source Hardening Skills
 
 **English** | [中文](README_CN.md)
@@ -103,7 +105,7 @@ claude mcp add codex -s user -- codex mcp-server
 ### 4. Run in your target repository
 
 ```text
-/oss-hardening .
+/oss-hardening .  # Use `.` for the current directory, or specify any valid repository path
 ```
 
 After a full run, the pipeline generates these artifacts in your repo root:
